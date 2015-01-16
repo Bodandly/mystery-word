@@ -1,11 +1,7 @@
 import random
 
 
-guessed_letters = []
-guess_counter = 8
-
-
-def word_get(file, mode="NONE"):
+def word_get(file, mode):
     with open(file) as working_file:
         word_string = working_file.read()
     word_list = word_string.split()
@@ -29,25 +25,52 @@ def introduction():
     with open('mystery_word_ascii.txt') as art_file:
         word_art = art_file.read().ljust(10)
         print(word_art)
-    print("""
+    introduction_text = """
           Welcome to Mystery Word! In this game you will attempt to guess
           a mystery word (isn't that kind of obvious?). However, you will be
           guessing it one letter at a time. If you guess the wrong letter
           eight times you will lose the game, so choose wisely! Please guess
           only one letter at a time. Good luck!
-          """)
+          """
+    print(introduction_text)
+    return(introduction_text)
 
 
-def graphic_generation(word, guessed_list=[]):
+def graphic_gen(word, guessed_list=[]):
     graphic_list = []
     for letter in word:
         if letter in guessed_list:
             graphic_list.append(letter)
         else:
             graphic_list.append("_")
-    graphic = "".join(graphic_list)
-    print(graphic)
-    return graphic
+    seen_graphic = " ".join(graphic_list)
+    hidden_graphic = "".join(graphic_list)
+    print(seen_graphic)
+    return hidden_graphic
+
+
+def get_difficulty():
+    mode = input("Would you like to play [E]asy, [M]edium, or [H]ard? ")
+    mode = mode.upper()
+    wrong_input = "Please enter E, M, or H. Try again."
+    if mode == "":
+        print(wrong_input)
+        get_difficulty()
+    if len(mode) > 1:
+        print(wrong_input)
+        letter_input()
+    if not mode.isalpha():
+        print(wrong_input)
+        letter_input()
+    if mode == "E":
+        mode = "Easy"
+    if mode == "M":
+        mode = "Medium"
+    if mode == 'H':
+        mode = "Hard"
+
+    print("You picked {}.".format(mode))
+    return mode
 
 
 def letter_input():
@@ -69,12 +92,53 @@ def letter_input():
         print("You entered {}".format(letter))
         return letter
 
-def lower_guess_counter():
-    guess_counter -= 1
-    return guess_counter
-# graphic_generation('boots', guessed_letters = ['b','t'])
 
-# graphic_generation("boats", guessed_list=["b", "t"])
+def change_guess_counter(guess_counter, guess_checker):
+    if guess_checker == False:
+        guess_counter -= 1
+        return guess_counter
+    else:
+        return guess_counter
+
+
+def win_loss_checker(game_word, guess_counter, current_graphic):
+    if game_word == current_graphic:
+        win_string = "You win! Congratulations!"
+        return win_string
+        print(win_string)
+    if guess_counter == 0:
+        loss_string = "You have run out of guesses, you lose."
+        return loss_string
+        print(loss_string)
+
+
+def progress_teller():
+        print("Here is your current progress: {}.".format(graphic_gen()))
+        print("You have {} guesses left.".format(guess_counter))
+
+
+def guess_checker(guessed_letter, game_word):
+    return guessed_letter in game_word
+
+
+# introduction()
+#
+# while True:
+#     get_difficulty()
+#     guess_counter = 8
+#     guessed_list = []
+#     difficulty = get_difficulty()
+#     game_word = word_get('/usr/share/dict/words', mode=difficulty)
+#     print("You word is {} characters long.".format(len(game_word)))
+#
+#     while True:
+#         progress_teller()
+#         guessed_list.append(letter_input())
+#
+#         win
+#
+#
+#    print("Your word ")
 
 
 # letter_input()
