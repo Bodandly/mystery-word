@@ -6,13 +6,13 @@ def word_get(file, mode):
         word_string = working_file.read()
     word_list = word_string.split()
     word = random.choice(word_list)
-    if mode == "EASY":
+    if mode == "E":
         while len(word) > 6 or len(word) < 4:
             word = random.choice(word_list)
-    if mode == "MEDIUM":
+    if mode == "M":
         while len(word) > 10 or len(word) < 6:
             word = random.choice(word_list)
-    if mode == "HARD":
+    if mode == "H":
         while len(word) < 11:
             word = random.choice(word_list)
     word = word.upper()
@@ -36,40 +36,52 @@ def introduction():
     return(introduction_text)
 
 
-def graphic_gen(word, guessed_list=[]):
+def graphic_list_mkr(game_word, guessed_letters):
     graphic_list = []
-    for letter in word:
-        if letter in guessed_list:
+    for letter in game_word:
+        if letter in guessed_letters:
             graphic_list.append(letter)
         else:
             graphic_list.append("_")
-    seen_graphic = " ".join(graphic_list)
+    return graphic_list
+
+
+def hidden_graphic_mkr(graphic_list):
     hidden_graphic = "".join(graphic_list)
-    print(seen_graphic)
     return hidden_graphic
+
+
+def seen_graphic_mkr(graphic_list):
+    seen_graphic = " ".join(graphic_list)
+    return seen_graphic
+
+
+#def check_word(seen_graphic):
 
 
 def get_difficulty():
     mode = input("Would you like to play [E]asy, [M]edium, or [H]ard? ")
     mode = mode.upper()
+    ok_inputs = ["E", "M", "H"]
     wrong_input = "Please enter E, M, or H. Try again."
     if mode == "":
         print(wrong_input)
-        get_difficulty()
+        return get_difficulty()
     if len(mode) > 1:
         print(wrong_input)
-        letter_input()
+        return get_difficulty()
     if not mode.isalpha():
         print(wrong_input)
-        letter_input()
+        return get_difficulty()
+    if not mode in ok_inputs:
+        print(wrong_input)
+        return get_difficulty()
     if mode == "E":
-        mode = "Easy"
-    if mode == "M":
-        mode = "Medium"
-    if mode == 'H':
-        mode = "Hard"
-
-    print("You picked {}.".format(mode))
+        print("You picked easy.")
+    elif mode == "M":
+        print("You picked medium.")
+    else:
+        print("You picked hard.")
     return mode
 
 
@@ -78,67 +90,102 @@ def letter_input():
     letter = unfinished_letter.upper()
     if letter in guessed_letters:
         print("You already guessed that letter, please try again.")
-        letter_input()
+        return letter_input()
     elif letter == "":
         print("You entered nothing, please try again.")
-        letter_input()
+        return letter_input()
     elif len(letter) > 1:
         print("You entered more than one letter, please try again.")
-        letter_input()
+        return letter_input()
     elif not letter.isalpha():
         print("You entered a number, please try again.")
-        letter_input()
+        return letter_input()
     else:
         print("You entered {}".format(letter))
         return letter
 
 
-def change_guess_counter(guess_counter, guess_checker):
-    if guess_checker == False:
+def change_guess_counter(guess_counter, guess_check):
+    if guess_check == False:
         guess_counter -= 1
         return guess_counter
     else:
         return guess_counter
 
 
-def win_loss_checker(game_word, guess_counter, current_graphic):
-    if game_word == current_graphic:
-        win_string = "You win! Congratulations!"
+def win_loss_checker(random_word, guesses_left, created_word):
+    if random_word == created_word:
+        win_string = "win"
+        print("You win! Congratulations!")
         return win_string
-        print(win_string)
-    if guess_counter == 0:
-        loss_string = "You have run out of guesses, you lose."
+    elif guesses_left == 0:
+        loss_string = "lose"
+        print("You have run out of guesses, you lose.")
         return loss_string
-        print(loss_string)
+    else:
+        carry_on = "continue"
+        return carry_on
 
 
-def progress_teller():
-        print("Here is your current progress: {}.".format(graphic_gen()))
-        print("You have {} guesses left.".format(guess_counter))
+
+
+def progress_teller(seen_graphic, guess_counter, guessed_letters):
+        print("""Here is your current progress: {}
+                 List of guessed letters: {}
+                 Guesses left: {}""".format(seen_graphic,
+                 guessed_letters, guess_counter))
+        return """Here is your current progress: {}
+                  List of guessed letters: {}
+                  Guesses left: {}""".format(seen_graphic,
+                  guessed_letters, guess_counter)
 
 
 def guess_checker(guessed_letter, game_word):
     return guessed_letter in game_word
 
-
-# introduction()
-#
-# while True:
-#     get_difficulty()
-#     guess_counter = 8
-#     guessed_list = []
-#     difficulty = get_difficulty()
-#     game_word = word_get('/usr/share/dict/words', mode=difficulty)
-#     print("You word is {} characters long.".format(len(game_word)))
-#
-#     while True:
-#         progress_teller()
-#         guessed_list.append(letter_input())
-#
-#         win
-#
-#
-#    print("Your word ")
+def play_again():
+    choice = input("Play again: [Y]es, [N]o?")
+    choice = choice.upper()
+    if len(choice) > 1:
+        print("Please pick again.")
+        return play_again()
+    elif choice != "Y" or choice != "N":
+        print("Please pick again.")
+        return play_again()
+    elif choice.isnumeric():
+        print("Pleae pick again.")
+        return play_again()
+    elif choice == "Y" or choice == "N":
+        return choice
 
 
-# letter_input()
+progress_teller("Derp", 8, ["B", "C"])
+
+introduction()
+
+while True:
+    guess_counter = 8
+    guessed_letters = []
+    mode = get_difficulty()
+    game_word = word_get('/usr/share/dict/words', mode)
+    print("You word is {} characters long.".format(len(game_word)))
+    while True:
+        guessed_letter = letter_input()
+        guessed_letters.append(guessed_letter)
+        graphic_list = graphic_list_mkr(game_word, guessed_letters)
+        hidden_graphic = hidden_graphic_mkr(graphic_list)
+        seen_graphic = seen_graphic_mkr(graphic_list)
+        guess_check = guess_checker(guessed_letter, game_word)
+        guess_counter = change_guess_counter(guess_counter, guess_check)
+        progress_teller(seen_graphic, guess_counter, guessed_letters)
+        condition = win_loss_checker(game_word, guess_checker, guessed_letters)
+        print(condition)
+        if guess_counter == 0:
+            print("You lose!")
+            break
+        elif hidden_graphic == game_word:
+            print("You win!")
+            break
+    choice = play_again()
+    if choice == "N":
+        break
