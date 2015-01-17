@@ -1,4 +1,8 @@
 import random
+from pyfiglet import Figlet
+
+
+f = Figlet(font='ogre')
 
 
 def word_get(file, mode):
@@ -22,9 +26,7 @@ def word_get(file, mode):
 def introduction():
     """Just a way of giving the player an introduction to the games and it's
     rules."""
-    with open('mystery_word_ascii.txt') as art_file:
-        word_art = art_file.read().ljust(10)
-        print(word_art)
+    print(f.renderText("Mystery Word"))
     introduction_text = """
           Welcome to Mystery Word! In this game you will attempt to guess
           a mystery word (isn't that kind of obvious?). However, you will be
@@ -54,9 +56,6 @@ def hidden_graphic_mkr(graphic_list):
 def seen_graphic_mkr(graphic_list):
     seen_graphic = " ".join(graphic_list)
     return seen_graphic
-
-
-#def check_word(seen_graphic):
 
 
 def get_difficulty():
@@ -130,10 +129,10 @@ def win_loss_checker(random_word, guesses_left, created_word):
 
 
 def progress_teller(seen_graphic, guess_counter, guessed_letters):
-        print("""Here is your current progress: {}
-                 List of guessed letters: {}
-                 Guesses left: {}""".format(seen_graphic,
+        print("""List of guessed letters: {}
+                 Guesses left: {}""".format(
                  guessed_letters, guess_counter))
+        print(f.renderText(seen_graphic))
         return """Here is your current progress: {}
                   List of guessed letters: {}
                   Guesses left: {}""".format(seen_graphic,
@@ -158,10 +157,8 @@ def play_again():
     elif choice == "Y" or choice == "N":
         return choice
 
-
-progress_teller("Derp", 8, ["B", "C"])
-
 introduction()
+
 
 while True:
     guess_counter = 8
@@ -170,6 +167,7 @@ while True:
     game_word = word_get('/usr/share/dict/words', mode)
     print("You word is {} characters long.".format(len(game_word)))
     while True:
+
         guessed_letter = letter_input()
         guessed_letters.append(guessed_letter)
         graphic_list = graphic_list_mkr(game_word, guessed_letters)
@@ -179,13 +177,11 @@ while True:
         guess_counter = change_guess_counter(guess_counter, guess_check)
         progress_teller(seen_graphic, guess_counter, guessed_letters)
         condition = win_loss_checker(game_word, guess_checker, guessed_letters)
-        print(condition)
+
         if guess_counter == 0:
-            print("You lose!")
+            print(f.renderText("You lose!"))
             break
         elif hidden_graphic == game_word:
-            print("You win!")
+            print(f.renderText("You win!"))
             break
-    choice = play_again()
-    if choice == "N":
-        break
+    break
