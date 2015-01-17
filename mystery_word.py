@@ -1,6 +1,7 @@
 import random
 from pyfiglet import Figlet
 import os
+import time
 
 
 f = Figlet(font='epic')
@@ -55,11 +56,8 @@ def graphic_list_mkr(game_word, guessed_letters):
     return graphic_list
 
 
-def guess_checker(guessed_letter, game_word):
-    return guessed_letter in game_word
-
-
 def hidden_graphic_mkr(graphic_list):
+    """Creates graphic used to check win condition in win_loss_checker."""
     hidden_graphic = "".join(graphic_list)
     return hidden_graphic
 
@@ -107,7 +105,8 @@ def play_again():
     """Asks the player if they would like to play again or not. It will
     only accept the letters y or n. If they do not pick y or n it will return
     the function untill they do."""
-    choice = input("Play again: [Y]es, [N]o?")
+    print(f.renderText("Try Again?"))
+    choice = input("[Y]es, [N]o?")
     choice = choice.upper()
     pick_again = "Please pick again."
     if len(choice) > 1:
@@ -126,11 +125,11 @@ def play_again():
 def progress_teller(seen_graphic, guess_counter, guessed_letters):
     """Prints out the list of guessed letters, number of guesses left,
     and the state of word filled in with their correct guesses."""
-        print("""List of guessed letters: {}
-              Guesses left: {}""".format(
-              guessed_letters, guess_counter))
-        print(f.renderText(seen_graphic))
-        return """Here is your current progress: {}
+    print("""List of guessed letters: {}
+    Guesses left: {}""".format(
+              sorted(guessed_letters), guess_counter))
+    print(f.renderText(seen_graphic))
+    return """Here is your current progress: {}
                List of guessed letters: {}
                Guesses left: {}""".format(seen_graphic,
                                           guessed_letters, guess_counter)
@@ -156,8 +155,6 @@ def win_loss_checker(random_word, guesses_left, created_word):
         loss_string = "loss"
         print("You have run out of guesses, you lose.")
         return loss_string
-    else:
-        return continue
 
 
 def word_get(file, mode):
@@ -186,7 +183,6 @@ def word_get(file, mode):
 
 os.system("clear")
 introduction()
-
 while True:
     guess_counter = 8
     guessed_letters = []
@@ -212,6 +208,8 @@ while True:
             print(f.renderText(game_word))
             print(f.renderText("You lose."))
             break
+    time.sleep(5)
+    os.system("clear")
     choice = play_again()
     if choice == "Y":
         continue
