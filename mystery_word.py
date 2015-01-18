@@ -18,7 +18,7 @@ def change_guess_counter(guess_counter, guessed_letter, game_word):
 
 
 def get_difficulty():
-    """Asks the user for a difficulty, then assigns it to a variable mode."""
+    """Asks the user for a difficulty, then assigns it to the variable mode."""
     mode = input("Would you like to play [E]asy, [M]edium, or [H]ard? ")
     mode = mode.upper()
     ok_inputs = ["E", "M", "H"]
@@ -127,12 +127,12 @@ def progress_teller(seen_graphic, guess_counter, guessed_letters):
     and the state of word filled in with their correct guesses."""
     print("""List of guessed letters: {}
     Guesses left: {}""".format(
-              sorted(guessed_letters), guess_counter))
+        sorted(guessed_letters), guess_counter))
     print(f.renderText(seen_graphic))
     return """Here is your current progress: {}
-               List of guessed letters: {}
-               Guesses left: {}""".format(seen_graphic,
-                                          guessed_letters, guess_counter)
+           List of guessed letters: {}
+           Guesses left: {}""".format(seen_graphic,
+                                      guessed_letters, guess_counter)
 
 
 def seen_graphic_mkr(graphic_list):
@@ -190,6 +190,7 @@ while True:
     game_word = word_get("/usr/share/dict/words", mode)
     print("You word is {} characters long.".format(len(game_word)))
     while True:
+
         guessed_letter = letter_input()
         guessed_letters.append(guessed_letter)
         graphic_list = graphic_list_mkr(game_word, guessed_letters)
@@ -212,6 +213,7 @@ while True:
     os.system("clear")
     choice = play_again()
     if choice == "Y":
+        os.system("clear")
         continue
     elif choice == "N":
         break
